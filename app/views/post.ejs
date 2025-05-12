@@ -1,0 +1,59 @@
+<%- include('template/header') -%>
+
+
+<div class="separator-large"></div>
+<div class="separator-large"></div>
+<div class="separator-large"></div>
+
+<div id="header" class="part">
+	<h1>Post to The Wall</h1>
+	<span class="separator-small"></span>
+	<p>Alternatively, <a href="/read">read from The Wall</a>.</p>
+</div>
+
+<div class="separator-large"></div>
+
+<form class="part content" action="/post" method="post">
+	<textarea id="postbox" class="textbox-in" title="" name="text" placeholder="Write post..." value="text" autofocus required><%= text %></textarea>
+	<span class="separator-small"></span>
+	<div class="lr-row">
+		<input type="submit" name="submit" value="Post">
+		<span class="separator-tab"></span>
+		<span id="status"><%= message %></span>
+		<span class="separator-lr"></span>
+		<select id="mood" name="mood">
+			<option value="0">😥</option>
+			<option value="1">🙁</option>
+			<option value="2" selected>😐</option>
+			<option value="3">🙂</option>
+			<option value="4">😁</option>
+		</select>
+		<span class="separator-tab"></span>
+		<input id="highlight" name="highlight" type="checkbox" onclick="updateFX()">
+		<label for="highlight"> Highlight</label>
+	</div>
+</form>
+
+<div class="separator-large"></div>
+<div class="separator-large"></div>
+
+
+<%- include('template/footer') -%>
+
+
+<script type="text/javascript" language="javascript">
+
+	const eHighlight = document.getElementById('highlight')
+	const ePostbox = document.getElementById('postbox')
+
+	function updateFX() {
+		if (eHighlight.checked) {
+			ePostbox.classList.add('highlight')
+		}
+		else {
+			ePostbox.classList.remove('highlight')
+		}
+	}
+
+</script>
+

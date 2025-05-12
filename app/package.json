@@ -1,0 +1,25 @@
+{
+  "name": "thewall",
+  "version": "5.0.0",
+  "description": "A web-based service for self-documentation.",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV='production' node ./app.js",
+    "test": "NODE_ENV='development' DEBUG='*' nodemon ./app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "marked": "^15.0.11",
+    "memorystore": "^1.6.7",
+    "morgan": "^1.10.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "debug": "^4.4.0",
+    "nodemon": "^3.1.10"
+  }
+}

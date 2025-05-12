@@ -1,0 +1,115 @@
+<%- include('template/header') -%>
+
+
+<div id="bars" class="part bars">
+	<div id="year" class="bar-box">
+		<% let minYear = minDate.getFullYear(); let maxYear = maxDate.getFullYear(); %>
+		<% for (let year = minYear; year <= maxYear; year++) { %>
+			<% if (minYear != maxYear && year === selectedYear) { %>
+				<a class="bar-item selected" href="?year=<%= year %>&month=<%= selectedMonth %>"><%= year %></a>
+			<% } else { %>
+				<a class="bar-item" href="?year=<%= year %>&month=<%= selectedMonth %>"><%= year %></a>
+			<% } %>
+		<% } %>
+	</div>
+	<div id="month" class="bar-box">
+		<% for (let month = 0; month < 12; month++) { %>
+
+			<% let date = new Date(selectedYear, month) %>
+			<% let name = Intl.DateTimeFormat('en', {month: 'short'}).format(date) %>
+
+			<% if (month === selectedMonth) { %>
+				<a class="bar-item selected" href="?year=<%= selectedYear %>&month=<%= month %>"><%= name %></a>
+			<% } else if (minDate <= date && date < maxDate) { %>
+				<a class="bar-item" href="?year=<%= selectedYear %>&month=<%= month %>"><%= name %></a>
+			<% } else { %>
+				<p class="bar-item disabled" title="Unavailable"><%= name %></p>
+			<% } %>
+		<% } %>
+	</div>
+</div>
+
+<div class="separator-large"></div>
+<div class="separator-large"></div>
+<div class="separator-large"></div>
+
+<div id="header" class="part">
+	<h1>Read from The Wall</h1>
+	<span class="separator-small"></span>
+	<p>Alternatively, <a href="/post">post to The Wall</a>.</p>
+</div>
+
+<div class="separator-large"></div>
+
+<div id="content" class="part content">
+	<div class="lr-row">
+		<p>Posts: <span id="count-posts"><%= post_count %></span></p>
+		<span class="separator-lr"></span>
+		<p>Highlights: <span id="count-highlights"><%= hl_count %></span></p>
+	</div>
+	<div id="posts">
+		<% if (post_count === 0) { %>
+			<h2>No posts found<h2>
+		<% } else { %>
+			<% for (const post of posts) { %>
+				<article id="<%= post.id %>" class="textbox-out <%= post.highlight ? 'highlight' : '' %>">
+					<div class="lr-row">
+						<em><%= post.time %></em>
+						<span class="symbol"><%= post.mood %></span>
+						<span class="separator-lr"></span>
+						<input id="hl-switch-<%= post.id %>" type="checkbox" onclick="updateHighlight(this)" <%= post.highlight? 'checked' : '' %> />
+						<label for="hl-switch-<%= post.id %>">  Highlight</label>
+					</div>
+					<span class="separator-small"></span>
+					<div class="post-content">
+						<%- post.text %>
+					</div>
+				</article>
+			<% } %>
+		<% } %>
+	</div>
+</div>
+
+<div class="separator-large"></div>
+
+
+<%- include('template/footer') -%>
+
+
+<script type="text/javascript" language="javascript">
+
+	const eCountHls = document.getElementById('count-highlights')
+
+	function setHighlight(article, newState) {
+		if (newState === true) {
+			article.classList.add('highlight')
+			eCountHls.textContent++
+		}
+		else {
+			article.classList.remove('highlight')
+			eCountHls.textContent--
+		}
+	}
+
+	async function updateHighlight(checkbox) {
+
+		const article = checkbox.closest('article')
+		const newState = checkbox.checked
+		const oldState = !newState
+		setHighlight(article, newState)
+
+		try {
+			let response = await fetch(`/setHighlight/${article.id}/${Number(newState)}`, { method: 'PATCH' })
+			if (!response.ok) {
+				throw new Error()
+			}
+		}
+		catch(err) {
+			await new Promise(r => setTimeout(r, 500))
+			checkbox.checked = oldState
+			setHighlight(article, oldState)
+		}
+	}
+
+</script>
+

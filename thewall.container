@@ -1,0 +1,19 @@
+[Unit]
+Description=A selfhosted, selfdocumenting service
+
+[Container]
+Timezone=local
+AutoUpdate=registry
+ContainerName=%N
+Image=ghcr.io/coder0x6675/thewall:latest
+HealthCmd=wget -q -O /dev/null -t 1 http://127.0.0.1:3000/
+PublishPort=3000:3000/tcp
+Volume=%D/%N:/data
+
+[Service]
+ExecStartPre=mkdir -p "%D/%N"
+Restart=always
+TimeoutStartSec=600
+
+[Install]
+WantedBy=default.target
